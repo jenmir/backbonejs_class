@@ -1,0 +1,32 @@
+
+Create a new repository on the command line
+
+touch README.md
+git init
+git add README.md
+git commit -m "first commit"
+git remote add origin git@github.com:jenmir/backbonejs_class.git
+git push -u origin master
+
+both remote add and push returns error "Permission denied (publickey)".
+ssh-add returns "Could not open a connection to your authentication agent."
+
+run ssh-agent: 
+$ ssh-agent
+SSH_AUTH_SOCK=/tmp/ssh-NbDfXG2772/agent.2772; export SSH_AUTH_SOCK;
+SSH_AGENT_PID=3296; export SSH_AGENT_PID;
+echo Agent pid 3296;
+
+run ssh-keygen :
+(tell it where to save the key)
+Enter passphrase (empty for no passphrase):
+Enter same passphrase again:
+Your identification has been saved in ./id_rsa.
+Your public key has been saved in ./id_rsa.pub.
+The key fingerprint is:
+a7:0b:69:76:ed:1f:62:7d:d4:6b:6e:c8:31:e6:fa:61 jemi@USPHOWS104
+
+Push an existing repository from the command line
+
+git remote add origin git@github.com:jenmir/backbonejs_class.git
+git push -u origin master

@@ -1,0 +1,93 @@
+backbone.js class notes
+--------------------------
+https://backbonedeck.backliftapp.com
+
+config.yml automatically looks in /app folder.
+
+<%=  %>  is an expression that will evaluate any js inside the brackets.
+
+Model-View-Content: Backbone implements the entire model, although the
+view is shared among the View class in Backbone and Handlebars templates to deliver a 
+more "opinionated" view.  
+
+Backlift.com is a server and workload tool, to bypass the extra work 
+required to set up the server side of the equation. Backlift has other
+features that enhance projects. This class doesn't focus on the server side.
+
+==================================
+console commands to explore the collections:
+
+var model = new Backbone.Model({name: "jen"});
+model.set(name: "ahmed")
+model.get("name");
+col = new Backbone.Collection();
+col = new Backbone.Collection([{name:"jen"},{name:"saad"}])
+col.get(name)
+var f_model = new Backbone.Model({name: "Feather"});
+f_model.get("name")
+col.add(f_model)
+col.length
+col.at(1).name
+col.at(0).get("name")
+col.at(1).toJSON()
+col.toJSON()
+====================================
+
+RESTful apis:
+
+var photo = new Photo({caption:"hello"});
+photo.save()
+
+returns:
+>>POST /data/myphotos
+<<{status : "success", id: 234234"}
+
+if there is no ID, it means the object does not yet exist on the server. Only on client.
+
+photo.id >> 234234
+photo.isNew() >> false
+
+photo.save({caption: "hello again"})
+>>PUT /data/myphotos/234234
+
+backlift.com has an open ended server called /backlift/data .
+var Song = Backbone.Model.extend();
+undefined
+var Album = Backbone.Collection.extend({ model: Song, url: "/backlift/data/songs" });
+undefined
+var album = new Album()
+undefined
+album
+child {length: 0, models: Array[0], _byId: Object, constructor: function, model: function…}
+album.fetch()
+Object {readyState: 1, getResponseHeader: function, getAllResponseHeaders: function, setRequestHeader: function, overrideMimeType: function…}
+var song = new Song({title: "Puff Drag"});
+song.save(); fails (due to bad url)
+album.add(song);
+child {length: 1, models: Array[1], _byId: Object, constructor: function, model: function…}
+song.save();
+[check the "network" tab in debugger, 
+  then the "Name / path" listing for "songs" on the left side on bottom,
+  then "response" sub-tab to see after it is saved to server]
+
+song.set({title: "The New Title"});
+song.isNew [returns false]
+song.save();  [saves the new title on the server for this object in the collection]
+song.destroy()  [removes the object from the collection]
+
+The Album add is needed because Song knows what collection it belongs to. So saving a 
+song first requires adding the song to the album. If you remove the song from the 
+collection and try to save it, same error. 
+
+================
+Asynchronous operations: be mindful of the server lag times. Callbacks are 
+typically used in jquery to monitor this, so that subsequent actions are
+not executed before their time.
+
+================
+Backlift admin link (from your web page in progress)
+ -> Databrowser -> Import -> paste in the photos array
+this will import a new collection on the Backlift server.
+Verify on the console that its there:
+$.get("/backlift/data/photos");
+
