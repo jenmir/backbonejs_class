@@ -1,0 +1,98 @@
+console.log('this is main.js - exercise 3');
+
+var PicModel = Backbone.Model.extend( {
+  defaults: {
+    url: "/photos/catmusig.jpg",
+	caption: "default caption"
+  }
+} );
+
+var Album = Backbone.Collection.extend({
+    model: PicModel
+});
+
+// var album = new Album();  redundant - not needed with new rendering below.
+
+var photodata = [{url: "/photos/cat1.jpg", caption: "A cat 1."}, 
+                 {url: "/photos/cat2.jpg", caption: "A cat 2."}, 
+                 {url: "/photos/cat3.jpg", caption: "A cat 3."},
+                 {url: "/photos/cat4.jpg", caption: "A cat 4."}, 
+           	     {url: "/photos/cat5.jpg", caption: "A cat 5."},
+                 {url: "/photos/cat6.jpg", caption: "A cat 6."}, 
+                 {url: "/photos/notcat.jpg", caption: "Not a cat."}];
+
+//  loop iteration is not needed - Backbone collection can be passed
+//  in directly as an object (see rendering code at the bottom function)
+//
+//for i in photodata {
+//  album.add({photodata[i]);
+//  });
+//}				 
+//  this is overwritten by the later rendering.  
+//
+//album.add({
+//   url: "/photos/cat1.jpg", caption: "A cat 1."
+//});
+				 
+//album.add({
+//   url: "/photos/cat2.jpg", caption: "A cat 2."
+//});
+
+//album.add({
+//   url: "/photos/cat3.jpg", caption: "A cat 3."
+//});
+
+// orig
+//var PhotoView = Backbone.View.extend({
+//	className: "photo",
+//	render: function(photo) {
+//		this.$el.html(Handlebars.templates.photo(photo));
+//		return this;
+//	}
+//});
+
+var PicView = Backbone.View.extend({
+  className: "photo",
+  render: function() {
+    this.$el.html(Handlebars.templates.photo(this.model.toJSON()));
+    return this;
+  }
+});
+
+var AlbumView = Backbone.View.extend({
+  render: function() {
+    var self = this;
+    this.collection.each(function(picmod) {
+      var picView = new PicView({model: picmod});
+      self.$el.append(picView.render().el);
+    });
+    return this;
+  }
+});
+
+// orig
+//var GalleryView = Backbone.View.extend({
+//	render: function(photodata) {
+//		var self = this;
+//		_.each(photodata, function(photo) {
+//			var photoView = new PhotoView();
+//			self.$el.append(photoView.render(photo).el);
+//		});
+//		return this;
+//	}
+//});
+
+$(document).ready(function() {
+//	album = new AlbumView({collection : album});
+//	galleryView.render(photodata);
+//    $("body").append(album.render().el);
+   var photoCollection = new Album(photodata);
+   album = new AlbumView({collection: photoCollection});
+   $('div').append(album.render().el);  // .el returns "this" object
+});
+
+// there is still a bug in this program - the gallery has
+// appended twice. the first time is correctly appended to the 'div'
+// object, and produces a gallery of correct pic sizes.
+// the second append puts the pics in their original sizes, which
+// are too big. Isolate and remove the second append action to fix this.
